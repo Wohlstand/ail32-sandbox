@@ -361,7 +361,7 @@ void *load_global_timbre(FILE *GTL, unsigned short bank, unsigned short patch)
     {
         fread(&GTL_hdr, sizeof(GTL_hdr), 1, GTL);
 
-        printf("%d, %d [size=%u]\n", GTL_hdr.bank, GTL_hdr.patch, sizeof(GTL_hdr));
+        // printf("%d, %d [size=%u]\n", GTL_hdr.bank, GTL_hdr.patch, sizeof(GTL_hdr));
 
         if(GTL_hdr.bank == -1)
         {
