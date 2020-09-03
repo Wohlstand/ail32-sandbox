@@ -54,7 +54,7 @@ VEL_SENS        equ 1                   ;Velocity sensitivity disabled if 0
 
 VEL_TRUE        equ 0                   ;Full velocity sensitivity range if 1
                                         ;(set to 0 to reduce playback noise)
-DEF_PITCH_RANGE equ 12                  ;Default pitch wheel range (semitones)
+DEF_PITCH_RANGE equ 2                   ;Default pitch wheel range (semitones)
 
 DEF_AV_DEPTH    equ 11000000b           ;Default AM/Vibrato depth
                                         ;bit 7: AM depth 4.8dB if 1, else 1dB
