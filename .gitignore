@@ -1,0 +1,5 @@
+*.o
+*.obj
+*.dll
+*.exe
+out/
