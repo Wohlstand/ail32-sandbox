@@ -178,7 +178,7 @@ driver_index    LABEL DWORD
                 INCLUDE mmaster.inc     ;ASC MediaMaster and 100% compatibles
                 ENDIF
 
-                IFDEF SPKR              
+                IFDEF SPKR
                 INCLUDE spkr32.inc      ;Internal speaker support for PC/Tandy
                 ENDIF
 
@@ -187,15 +187,15 @@ driver_index    LABEL DWORD
                 ;
 
 ctrl_log        STRUC                   ;XMIDI sequence/global controller log
-PV              db NUM_CHANS dup (?)    
-MODUL           db NUM_CHANS dup (?)    
-PAN             db NUM_CHANS dup (?)    
-EXP             db NUM_CHANS dup (?)    
-SUS             db NUM_CHANS dup (?)    
+PV              db NUM_CHANS dup (?)
+MODUL           db NUM_CHANS dup (?)
+PAN             db NUM_CHANS dup (?)
+EXP             db NUM_CHANS dup (?)
+SUS             db NUM_CHANS dup (?)
 PBS             db NUM_CHANS dup (?)
-C_LOCK          db NUM_CHANS dup (?)    
-C_PROT          db NUM_CHANS dup (?)    
-V_PROT          db NUM_CHANS dup (?)    
+C_LOCK          db NUM_CHANS dup (?)
+C_PROT          db NUM_CHANS dup (?)
+V_PROT          db NUM_CHANS dup (?)
 ctrl_log        ENDS
 
 logged_ctrls    LABEL BYTE              ;Controllers saved in state table
@@ -213,7 +213,7 @@ prg_default     db 68,48,95,78          ;(Roland defaults)
                 db 41,3,110,122,-1
 
 ctrl_hash       db 256 dup (-1)         ;Controller offsets indexed for speed
-                
+
 state_table     STRUC                   ;XMIDI sequence state table layout
 TIMB            dd ?
 RBRN            dd ?
@@ -263,16 +263,16 @@ current_handle  dd ?
 service_active  dw ?
 trigger_fn      dd ?
 
-global_shadow   LABEL BYTE            
+global_shadow   LABEL BYTE
 global_controls ctrl_log <>
 global_program  db NUM_CHANS dup (?)
 global_pitch_l  db NUM_CHANS dup (?)
 global_pitch_h  db NUM_CHANS dup (?)
 GLOBAL_SIZE     equ ($-global_shadow)
 
-active_notes    db NUM_CHANS dup (?)    
+active_notes    db NUM_CHANS dup (?)
 lock_status     db NUM_CHANS dup (?)    ;bit 7: locked
-                                        ;    6: lock-protected           
+                                        ;    6: lock-protected
 init_OK         dw 0
 
 ;****************************************************************************
@@ -306,20 +306,20 @@ __next_XMID:    mov ax,[esi+4]                   ;find first XMID chunk
                 add eax,esi
                 mov esi,eax
                 jmp __find_XMID
-                
+
 __found_XMID:   mov ax,[esi+4]
                 xchg al,ah
                 shl eax,16
                 mov ax,[esi+6]
                 xchg al,ah
-                sub eax,5                        
+                sub eax,5
                 mov end_addr,eax
 
                 cmp DWORD PTR [esi],'MROF'      ;if outer header was a FORM,
                 jne __scan_CAT                  ;return successfully if CX=1
                 cmp ecx,1
                 je __seq_found
-                jmp __not_found           
+                jmp __not_found
 
 __scan_CAT:     add esi,12                      ;index first FORM chunk
 
@@ -340,7 +340,7 @@ __next_FORM:    mov ax,[esi+4]                  ;else add length of FORM + 8
 
 __next_seq:     loop __next_FORM                ;look for CXth sequence chunk
 
-__seq_found:    mov eax,esi                       
+__seq_found:    mov eax,esi
                 jmp __exit                      ;return pointer to first chunk
 
 __not_found:    mov eax,0                       ;return NULL if not found
@@ -350,7 +350,7 @@ find_seq        ENDP
 ;****************************************************************************
 rewind_seq      PROC C USES ebx esi edi \   ;Reset sequence pointer and invalidate
                 ,Sequence		;all state table entries
-                                                     
+
                 mov esi,[Sequence]
                 mov esi,sequence_state[esi]
 
@@ -557,7 +557,7 @@ __for_control:  mov ebx,con             ;values
                 je __next_control       ;done above)
                 mov ctrl,ebx
                 mov bl,ctrl_hash[ebx]
-                mov index,ebx            
+                mov index,ebx
                 mov edi,0
 __for_channel:  mov ebx,edi
                 add ebx,index
@@ -602,9 +602,9 @@ XMIDI_volume    PROC C \      		;Send updated volume control messages
                 USES ebx esi edi \
                 ,State:PTR
 
-                mov esi,[State]       
-                                       
-                mov ebx,0                
+                mov esi,[State]
+
+                mov ebx,0
 __for_chan:     movzx eax,[esi].state_table.chan_controls.PV[ebx]
                 cmp al,-1
                 je __next_chan
@@ -655,7 +655,7 @@ XMIDI_control   PROC\
                 mov [esi].state_table.chan_indirect[ebx],-1
                 mov bl,al
                 mov edi,[esi].state_table.ctrl_ptr      ;else get value from controller table
-                mov dl,[edi][ebx]      
+                mov dl,[edi][ebx]
 
 __value:        movzx ebx,BYTE PTR [Con]        ;BX=controller #
 
@@ -670,8 +670,8 @@ __value:        movzx ebx,BYTE PTR [Con]        ;BX=controller #
 __interpret:    mov al,BYTE PTR [Con]	;handle sequence-specific controllers
                 mov bl,BYTE PTR [Chan]
                 cmp al,PART_VOLUME      ;BX=channel, AL=controller #, DX=value
-                je __scale_volume       
-                cmp al,CLEAR_BEAT_BAR   
+                je __scale_volume
+                cmp al,CLEAR_BEAT_BAR
                 je __go_cc
                 cmp al,CALLBACK_TRIG
                 je __go_cb
@@ -691,7 +691,7 @@ __send:         test lock_status[ebx],10000000b
                 mov bl,[esi].state_table.chan_map[ebx]
                 or bl,0b0h              ;send the controller value
                 invoke send_MIDI_message,ebx,eax,edx
-              
+
 __exit:         mov eax,3               ;return total event size
                 ret
 
@@ -739,7 +739,7 @@ __callback:     mov [esi].state_table.cur_callback,edx
                 mov prg_esp,esp         ;save SP before parameters pushed
                                         ;(use C calling convention)
                 push edx                ;push sequence handle, ctrl value
-                push [esi].state_table.seq_handle    
+                push [esi].state_table.seq_handle
                 call [trigger_fn]       ;and call the callback function
 
                 mov esp,prg_esp         ;restore old SP value
@@ -763,7 +763,7 @@ __for_found:    mov [esi].state_table.FOR_loop_cnt[ebx],dx
 __next_loop:    cmp dl,64               ;BREAK controller (value < 64)?
                 jl __exit               ;yes, ignore and continue
 
-                mov ebx,(FOR_NEST*2)-2   
+                mov ebx,(FOR_NEST*2)-2
                 mov ecx,FOR_NEST        ;else get index of inner loop counter
 __next_find:    cmp [esi].state_table.FOR_loop_cnt[ebx],-1
                 jne __next_found
@@ -819,9 +819,9 @@ XMIDI_note_on   PROC\       		;Turn XMIDI note on, add to note queue
                 push ds
                 pop es
 
-                mov esi,[State]          
+                mov esi,[State]
                 mov edi,[esi].state_table.EVNT_ptr;retrieve event data pointer
-                movzx eax,WORD PTR [edi]         
+                movzx eax,WORD PTR [edi]
                 and al,0fh                      ;AL=channel, AH=note #
                 mov chan_note,eax
                 movzx eax,BYTE PTR [edi+2]      ;AL=velocity
@@ -829,7 +829,7 @@ XMIDI_note_on   PROC\       		;Turn XMIDI note on, add to note queue
 
                 mov eax,edi             ;get VLN duration value in EAX
                 add edi,3
-                mov ebx,0                
+                mov ebx,0
                 mov edx,0
                 jmp __calc_VLN
 __shift_VLN:    mov ecx,7
@@ -854,7 +854,7 @@ __calc_VLN:     mov cl,[edi]
                 lea edi,[esi].state_table.note_chan
                 mov ecx,MAX_NOTES       ;set up to scan the note queue for
                 mov al,0ffh             ;an empty slot
-                repne scasb             
+                repne scasb
                 mov eax,edi
                 jne __overflow          ;overwrite entry 0 if queue full
                 inc [esi].state_table.note_count    ;else bump note counter...
@@ -928,7 +928,7 @@ __exit:         mov eax,event_len       ;return total event length
 __end_sequence: invoke reset_sequence,esi
                 mov [esi].state_table.status,SEQ_DONE
                 cmp [esi].state_table.post_release,0 ;release-on-completion pending?
-                je __exit              
+                je __exit
                 invoke release_seq,0,current_handle
                 jmp __exit
 
@@ -945,7 +945,7 @@ __div_quant:    shr eax,1
                 loop __div_quant
                 jmp __end_calc
 
-__do_mult:      mov eax,1 
+__do_mult:      mov eax,1
                 shl eax,cl
                 mov ecx,eax
                 mov eax,0
@@ -953,7 +953,7 @@ __mul_quant:    add eax,QUANT_TIME_16
                 loop __mul_quant
 
 __end_calc:     mov [esi].state_table.time_fraction,eax
-                
+
                 mov [esi].state_table.beat_fraction,0
                 sub [esi].state_table.beat_fraction,eax
 
@@ -1044,7 +1044,7 @@ __advance_loop: add ebx,[esi].state_table.time_fraction
                 jl __advance_next
 
                 sub ebx,[esi].state_table.time_per_beat
-                
+
                 inc eax                 ;bump beat if ticks > ticks per beat
 
                 cmp ax,[esi].state_table.time_numerator
@@ -1058,8 +1058,8 @@ __advance_next: dec edi
 
                 ENDIF
 
-                ret                     
-advance_count   ENDP                    
+                ret
+advance_count   ENDP
 
 ;****************************************************************************
 ;*                                                                          *
@@ -1074,7 +1074,7 @@ serve_driver    PROC\                   ;Periodic driver service routine
                 cld
 
                 cmp service_active,0    ;OK to interrupt foreground process?
-                je __do_service         
+                je __do_service
                 jmp __served            ;no
 
 __new_beat:     sub eax,[esi].state_table.time_per_beat
@@ -1121,7 +1121,7 @@ __end_events:   mov eax,[esi].state_table.beat_fraction
                 cmp eax,[esi].state_table.time_per_beat
                 jge __new_beat
 __same_beat:    mov [esi].state_table.beat_fraction,eax
-                
+
                 mov eax,[esi].state_table.tempo_error
                 sub eax,100
                 jge __rep_interval
@@ -1147,15 +1147,15 @@ __served:       ret
 __do_temp_grad: jmp __tempo_grad
 __do_vol_grad:  jmp __volume_grad
 
-__do_events:    jmp __get_event   
+__do_events:    jmp __get_event
 
 __do_queue:     lea edi,[esi].state_table.note_chan ;check note queue for expired notes
                 mov edx,edi
-                mov ecx,MAX_NOTES        
+                mov ecx,MAX_NOTES
 __scan_queue:   mov ax,ds
                 mov es,ax
-                mov al,0ffh             
-__next_scan:    repe scasb             
+                mov al,0ffh
+__next_scan:    repe scasb
                 je __end_queue          ;no active notes left, return to loop
                 mov ebx,edi
                 sub ebx,edx
@@ -1184,7 +1184,7 @@ __new_interval: add [esi].state_table.EVNT_ptr,1
 __get_event:    mov edi,[esi].state_table.EVNT_ptr      ;get next event status
                 movzx eax,BYTE PTR [edi];AL = channel/status
                 cmp eax,128             ;XMIDI interval count?
-                jb __new_interval       ;yes, store it and continue   
+                jb __new_interval       ;yes, store it and continue
 
                 mov ebx,eax             ;EDI->EVNT_ptr; ESI->state table
                 and eax,0f0h            ;AX = status
@@ -1211,7 +1211,7 @@ __get_event:    mov edi,[esi].state_table.EVNT_ptr      ;get next event status
                 mov edi,eax
                 jmp __end_event
 
-__sys:          cmp bl,0fh         
+__sys:          cmp bl,0fh
                 je __meta
                 invoke XMIDI_sysex,esi
                 mov edi,eax
@@ -1245,7 +1245,7 @@ __end_event:    add [esi].state_table.EVNT_ptr,edi
                 cmp [esi].state_table.status,SEQ_PLAYING
                 jne __end_sequence
                 jmp __get_event
-__end_sequence: jmp __next_seq          
+__end_sequence: jmp __next_seq
 
 __tempo_grad:   pushfd
                 mov eax,[esi].state_table.tempo_accum
@@ -1259,7 +1259,7 @@ __next_tempo:   sub eax,[esi].state_table.tempo_period
                 jecxz __end_t_grad      ;(no change this tick)
                 mov ebx,[esi].state_table.tempo_target
                 mov eax,[esi].state_table.tempo_percent
-                jl __add_tempo            
+                jl __add_tempo
                 sub eax,ecx
                 cmp eax,ebx
                 jge __set_tempo
@@ -1283,7 +1283,7 @@ __next_vol:     sub eax,[esi].state_table.vol_period
                 jcxz __end_v_grad       ;(no change this tick)
                 mov ebx,[esi].state_table.vol_target
                 mov eax,[esi].state_table.vol_percent
-                jl __add_vol            
+                jl __add_vol
                 sub eax,ecx
                 cmp eax,ebx
                 jge __set_vol
@@ -1332,7 +1332,7 @@ init_driver     PROC\
                 mov ecx,(SIZE active_notes)/2
                 rep stosw
 
-                mov esi,0               ;create fast lookup table for 
+                mov esi,0               ;create fast lookup table for
                 mov eax,0               ;XMIDI controller address offsets
                 mov ebx,0
 __create_hash:  mov bl,logged_ctrls[esi]
@@ -1521,7 +1521,7 @@ __handle_found: mov handle,ebx
 
                 mov edi,eax
                 mov chunk_len,12        ;else skip FORM <len> XMID header
-                
+
                 mov esi,[State]
                 mov sequence_state[ebx],esi
 
@@ -1582,7 +1582,7 @@ release_seq     PROC\
 
                 pushfd
                 cli
- 
+
                 mov esi,[Sequence]
                 cmp esi,-1
                 je __exit
@@ -1615,19 +1615,19 @@ start_seq       PROC\
                 mov esi,[Sequence]
                 cmp esi,-1
                 je __exit
-              
+
                 mov esi,sequence_state[esi]
-              
+
                 cmp [esi].state_table.status,SEQ_PLAYING
                 jne __start
                 invoke stop_seq,0,[Sequence]
-              
+
 __start:        invoke rewind_seq,[Sequence]
-              
+
                 mov eax,[esi].state_table.EVNT
                 add eax,8
                 mov [esi].state_table.EVNT_ptr,eax
-              
+
                 mov [esi].state_table.status,SEQ_PLAYING
                 mov [esi].state_table.seq_started,1
 
@@ -1690,7 +1690,7 @@ resume_seq      PROC\
                 invoke restore_sequence,esi
 
                 mov [esi].state_table.status,SEQ_PLAYING
-                                           
+
 __exit:         POP_F
                 ret
 resume_seq      ENDP
@@ -1820,16 +1820,16 @@ branch_index    PROC\
                 mov esi,sequence_state[esi]
 
                 cmp [esi].state_table.RBRN,0
-                je __exit               ;no branch points, exit               
+                je __exit               ;no branch points, exit
 
                                         ;make sure RBRN chunk is still present
-                mov edi,[esi].state_table.RBRN  
+                mov edi,[esi].state_table.RBRN
                 cmp [edi],DWORD PTR 'NRBR'
                 jne __exit              ;if not, no branching is possible
 
-                movzx ecx,WORD PTR [edi+8]         
+                movzx ecx,WORD PTR [edi+8]
                 add edi,10              ;get RBRN.cnt
-                mov al,BYTE PTR [Marker]         
+                mov al,BYTE PTR [Marker]
 __find_marker:  cmp [edi],al
                 je __marker_found
 __find_next:    add edi,6               ;sizeof(RBRN.entry)
@@ -1920,12 +1920,12 @@ set_rel_tempo   PROC\
                 jz __exit               ;(no difference specified)
 
                 cdq
-                xor eax,edx             
+                xor eax,edx
                 sub eax,edx
                 mov ecx,eax             ;CX = tempo delta
 
                 mov eax,10              ;get # of 100us periods/step
-                mul [Grad]           
+                mul [Grad]
                 div ecx
                 cmp eax,0
                 jnz __nonzero
@@ -1963,7 +1963,7 @@ set_rel_volume  PROC\
                 jz __exit               ;(no difference specified)
 
                 cdq
-                xor eax,edx 
+                xor eax,edx
                 sub eax,edx
                 mov ecx,eax             ;CX = vol delta
 
@@ -2087,7 +2087,7 @@ lock_channel    PROC\           	;return 0 if no channel available
                 mov eax,11000000b       ;skip locked and protected channels
 __do_search:    mov edi,MAX_TRUE_CHAN-1
 __find_channel: test lock_status[edi],al
-                jnz __find_next      
+                jnz __find_next
                 cmp active_notes[edi],cl
                 jae __find_next         ;'jae' gives priority to higher chans
                 mov cl,active_notes[edi]
@@ -2096,7 +2096,7 @@ __find_next:    dec edi
                 cmp edi,MIN_TRUE_CHAN-1 ;(1-based channel #'s)
                 jge __find_channel
 
-                cmp esi,-1              
+                cmp esi,-1
                 jne __got_channel
 
                 cmp eax,10000000b
@@ -2124,7 +2124,7 @@ release_channel PROC\
                 ,H,Chan
                 pushfd
                 cli
-                
+
                 mov esi,[Chan]
                 dec esi
                 test lock_status[esi],10000000b
@@ -2176,4 +2176,4 @@ release_channel ENDP
 
 ;****************************************************************************
                END
-
+

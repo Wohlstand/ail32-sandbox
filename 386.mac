@@ -27,7 +27,7 @@
                 ;Protected-mode POPF
                 ;
 
-POP_F           MACRO                   
+POP_F           MACRO
                 LOCAL intel_bytes
 
                 push ebp
@@ -43,11 +43,11 @@ intel_bytes:    pop ebp
 
                 ;
                 ;Set DX:EBX = interrupt vector #EAX
-                ;Also return ECX = real-mode interrupt vector, if 
+                ;Also return ECX = real-mode interrupt vector, if
                 ;applicable
                 ;
 
-GET_VECT        MACRO                   
+GET_VECT        MACRO
 
                 IFDEF DPMI
 
@@ -60,7 +60,7 @@ GET_VECT        MACRO
                 ELSEIFDEF INT21
 
                 push es                 ;(Flashtek X32)
-                mov cl,al               
+                mov cl,al
                 push ecx
                 mov eax,2502h
                 int 21h
@@ -111,9 +111,9 @@ SET_VECT        MACRO
                 ;
 
 SET_REAL_VECT   MACRO
-        
+
                 IFDEF INT21
-                
+
                 mov cl,al
                 mov eax,2505h
                 int 21h
@@ -160,15 +160,15 @@ GET_BIOS_DATA   MACRO
 
                 push ds
                 and ebx,0ffffh          ;(Rational DOS/4GW)
-                mov eax,40h             
-                mov ds,ax               
-                mov eax,ds:[ebx]  
+                mov eax,40h
+                mov ds,ax
+                mov eax,ds:[ebx]
                 pop ds
 
                 ELSEIFDEF INT21
 
                 IFDEF PHARLAP
-        
+
                 push ds                 ;(Phar Lap 386|DOS Extender)
                 and ebx,0ffffh
                 mov eax,34h
@@ -204,4 +204,4 @@ GET_BIOS_DATA   MACRO
                 ENDIF
 
                 ENDM
-
+

@@ -1,6 +1,6 @@
 ###############################################################
 #                                                             #
-#  MAKEFILE for AIL/32 development                            #             
+#  MAKEFILE for AIL/32 development                            #
 #  10-Aug-92 John Miles                                       #
 #                                                             #
 #  This file builds drivers and sample applications for use   #
@@ -174,4 +174,4 @@ mix32.exe: mix32.c ail32.h dll.h ail32.obj dllload.obj
 
 xp32.exe: xp32.c ail32.h dll.h ail32.obj dllload.obj
    hc386 -DINT21 xp32.c ail32.obj dllload.obj
-
+

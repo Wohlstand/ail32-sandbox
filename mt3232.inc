@@ -60,7 +60,7 @@ default_IO      LABEL WORD
 default_IRQ     dd -1
 default_DMA     dd -1
 default_DRQ     dd -1
-service_rate    dd QUANT_RATE           ;Typically 120 calls/second 
+service_rate    dd QUANT_RATE           ;Typically 120 calls/second
 display_size    dd 20                   ;20 char LCD display (MT-32)
 
 devnames        db 'Roland MT-32 or compatible with Roland MPU MIDI Interface',0
@@ -127,7 +127,7 @@ temp_buf        dd ?                            ;Temp for short sysex's
 
 reset_synth     PROC\
                 USES ebx esi edi
-                pushfd                
+                pushfd
                 cli
 
                 IF CLEAR_SYNTH          ;reset all internal parameters/patches
@@ -143,12 +143,12 @@ reset_synth     ENDP
 ;****************************************************************************
 init_synth      PROC\
                 USES ebx esi edi
-                pushfd           
+                pushfd
                 cli
                                         ;send adjusted partial reserve table
                 IF ADJUST_PART_RSV      ;to avoid dropout on high channel #s
                 invoke send_sysex_msg,0,10h,00h,04h,OFFSET part_rsv,9,4
-                ENDIF                   
+                ENDIF
 
                 invoke send_sysex_msg,0,10h,00h,01h,OFFSET init_reverb,3,4
 
@@ -213,7 +213,7 @@ __chk_k:        cmp ebx,80h
 __store_sum:    mov ah,bl
                 mov edx,0
                 mov dl,cl
-                ret     
+                ret
 add_sysex_addr  ENDP
 
 ;****************************************************************************
@@ -244,7 +244,7 @@ send_MIDI_sysex ENDP
 ;****************************************************************************
 sysex_wait      PROC USES ebx esi edi,\     ;Generate a 14-millisecond (typ.)
                 Delay                   ;delay with interrupts enabled
-                                        
+
                 pushfd                  ;Requires CGA/EGA/VGA/XGA video)
                 sti
 
@@ -259,14 +259,14 @@ sysex_wait      PROC USES ebx esi edi,\     ;Generate a 14-millisecond (typ.)
 
 __sync_1:       in al,dx                ;wait for leading edge of vertical
                 test eax,8              ;retrace signal
-                jz __sync_1             
+                jz __sync_1
 
 __sync_2:       in al,dx
                 test eax,8
                 jnz __sync_2
 
                 loop __sync_1
-__exit:         
+__exit:
                 POP_F
                 ret
 sysex_wait      ENDP
@@ -295,7 +295,7 @@ write_rhythm_setup PROC\
                 shl eax,2
                 add eax,[C_Offset]
                 invoke add_sysex_addr,eax,3,1,16
-                
+
                 mov cl,ah
                 mov ebx,[Value]
                 mov temp_buf,ebx
@@ -335,21 +335,21 @@ send_MIDI_message PROC\                 ;Send MIDI Channel Voice message
                 mov esi,[D1]
                 and esi,0ffh            ;SI=data 1 / controller #
                 mov edi,[Stat]
-                mov eax,edi               
+                mov eax,edi
                 and edi,00fh            ;DI=channel
 
                 and eax,0f0h            ;AX=status
-                cmp eax,0b0h             
+                cmp eax,0b0h
                 je __go_cc
                 cmp eax,0c0h
                 je __prg_change
                 cmp eax,090h            ;Note On (or Note Off)?
-                jne __send              
+                jne __send
 
                 add note_event,1        ;yes, update timbre cache LRU counters
                 movzx ebx,chan_timbs[edi]
                 cmp bl,-1
-                je __send       
+                je __send
                 shl ebx,1               ;Convert to word ptr
                 mov eax,note_event
                 mov timb_hist[ebx*2],eax
@@ -404,11 +404,11 @@ __ctrl_change:  cmp esi,SYSEX_RANGE_BEG
                 je __r_t_sel
                 cmp esi,TIMBRE_PROTECT
                 je __t_prot
-                
+
                 cmp esi,CHAN_LOCK       ;(lowest XMIDI control #)
-                jb __send               
+                jb __send
                 cmp esi,SEQ_INDEX       ;(highest XMIDI control #)
-                ja __send               ;keep XMIDI controls out of 
+                ja __send               ;keep XMIDI controls out of
                 jmp __exit              ;MIDI data stream for speed
 
 __t_prot:       movzx ebx,chan_timbs[edi]
@@ -448,7 +448,7 @@ __p_b_range:    movzx eax,MIDI_program[edi]
                 invoke send_byte,eax
                 jmp __exit
 
-__rev_mode:     
+__rev_mode:
                 invoke write_system,1,[D2]
                 jmp __exit
 __rev_time:     invoke write_system,2,[D2]
@@ -466,7 +466,7 @@ __sysex:        sub esi,SYSEX_RANGE_BEG
                 mov eax,esi
                 mov ecx,SYSEX_BLK_SIZE
                 mov edx,0
-                div ecx    
+                div ecx
                 mov op,edx
                 mov ebx,eax
                 mov al,BYTE PTR [D2]	;EBX=queue #, AL=data, EDX=operation
@@ -499,7 +499,7 @@ __send_queue:   movzx eax,queue_ptrs[ebx]
                    DWORD PTR K_ad[edi],DWORD PTR L_ad[edi],ebx,esi,0
 
                 cmp op,3                ;was this an overflow dump?
-                jne __address_byte      
+                jne __address_byte
 
                 invoke sysex_wait,4     ;yes, do an automatic wait of 4
                 jmp __overflowed        ;VBL intervals
@@ -507,7 +507,7 @@ __send_queue:   movzx eax,queue_ptrs[ebx]
 __address_byte: dec esi                 ;SI=len-1
 __overflowed:   invoke add_sysex_addr,esi,DWORD PTR M_ad[edi],\
                    DWORD PTR K_ad[edi],DWORD PTR L_ad[edi]
-               
+
                 mov L_ad[edi],al        ;add (qlen-1) to sysex start address,
                 mov K_ad[edi],ah        ;so future Final Byte controllers will
                 mov M_ad[edi],dl        ;address same byte (unless overflowed)
@@ -535,7 +535,7 @@ index_timbre    PROC\               ;Get global timbre's local index 0-63
                 ,GNum
 
                 mov esi,0
-                movzx eax,WORD PTR [GNum]   
+                movzx eax,WORD PTR [GNum]
 __find_gnum:    test timb_attribs[esi],10000000b
                 jz __find_next          ;(timbre unused)
                 cmp timb_bank[esi],ah
@@ -581,7 +581,7 @@ __bank_0:       mov ah,BYTE PTR [Patch] ;restore default Roland timbre...
                 and ah,63               ;set TIMBRE NUMBER 0-63
 __send:         invoke write_patch,[Patch],0,eax,2
 
-__exit:         ret                   
+__exit:         ret
 setup_patch     ENDP
 
 ;****************************************************************************
@@ -639,7 +639,7 @@ __send_data:    or esi,esi
                 invoke send_byte,eax
                 jmp __send_data
 
-__send_chksum:  movzx eax,chksum           
+__send_chksum:  movzx eax,chksum
                 and eax,7fh
                 sub al,80h
                 neg al
@@ -740,7 +740,7 @@ protect_timbre  ENDP
 unprotect_timbre PROC\
                 USES ebx esi edi\          ;Allow a timbre to be replaced
                 ,H,Bank,Num
-                pushfd 
+                pushfd
                 cli
 
                 mov eax,0
@@ -772,7 +772,7 @@ unprotect_timbre ENDP
 timbre_status   PROC\
                 USES ebx esi edi\           ;Return 0 if timbre not resident
                 ,H,Bank,Num
-                pushfd 
+                pushfd
                 cli
 
                 mov eax,0
@@ -780,9 +780,9 @@ timbre_status   PROC\
                 mov ah,BYTE PTR [Bank]
 
                 cmp ah,0                ;Roland driver reports all bank 0
-                je __OK                 ;(default) and bank 127 (rhythm) 
+                je __OK                 ;(default) and bank 127 (rhythm)
                 cmp ah,127              ;timbres present
-                je __OK                 
+                je __OK
 
                 invoke index_timbre,eax
 
@@ -829,7 +829,7 @@ get_request     PROC\
                 je __no_request         ;no requested timbres, exit
 
                                         ;make sure TIMB chunk is present
-                mov esi,[esi].state_table.TIMB   
+                mov esi,[esi].state_table.TIMB
                 cmp [esi],DWORD PTR 'BMIT'
                 jne __no_request        ;if not, no requests are possible
 
@@ -839,7 +839,7 @@ __chk_index:    add esi,2
                 movzx eax,WORD PTR [esi]
                 cmp ah,0                ;bank 0 reserved for Roland built-in
                 je __next_index         ;timbres.... don't request
-                cmp ah,127              ;bank 127 reserved for melodic-mode 
+                cmp ah,127              ;bank 127 reserved for melodic-mode
                 je __next_index         ;rhythm sounds.... don't request
                 invoke index_timbre,[esi]
                 cmp eax,-1              ;timbre in local cache?
@@ -852,7 +852,7 @@ __request:      mov eax,[esi]           ;else return request: AL=num, AH=bank
                 jmp __exit
 
 __no_request:   mov eax,-1
-                
+
 __exit:         POP_F
                 ret
 get_request     ENDP
@@ -905,23 +905,23 @@ __next_LRU:     add ebx,4
                 cmp esi,NUM_TIMBS
                 jb __find_LRU
 
-                cmp ecx,-1              ;if no unprotected timbre slots, exit 
+                cmp ecx,-1              ;if no unprotected timbre slots, exit
                 je __exit               ;without installing new timbre
 
                 mov esi,ecx             ;else SI = LRU timbre index
 
 __found:        mov ebx,esi             ;found free/LRU timbre, update its
                 shl ebx,1               ;timestamp and replace it
-                mov eax,note_event      
-                add note_event,1      
-                mov timb_hist[ebx*2],eax  
+                mov eax,note_event
+                add note_event,1
+                mov timb_hist[ebx*2],eax
 
                 mov eax,0
                 mov al,BYTE PTR [Num]   ;AL=num, AH=bank
                 mov ah,BYTE PTR [Bank]
                 mov timb_num[esi],al    ;record global # in slot
                 mov timb_bank[esi],ah   ;mark timbre "in use/unprotected"
-                mov timb_attribs[esi],10000000b                  
+                mov timb_attribs[esi],10000000b
 
                 cmp [Address],0
                 je __exit               ;(NULL pointer = placeholder)
@@ -952,4 +952,4 @@ __set_patch:    invoke setup_patch,[Num],[Bank]
 __exit:         POP_F
                 ret
 install_timbre  ENDP
-
+

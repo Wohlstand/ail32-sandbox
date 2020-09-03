@@ -8,7 +8,7 @@
 ;лл          1.01 of  1-May-93: Flashtek X32 compatibility added            лл
 ;лл                                                                         лл
 ;лл  80386 ASM source compatible with Microsoft Assembler v6.0 or later     лл
-;лл  Author: John Miles                                                     лл 
+;лл  Author: John Miles                                                     лл
 ;лл                                                                         лл
 ;ллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллл
 ;лл                                                                         лл
@@ -58,20 +58,20 @@ detect_device   PROC\
                 cli
 
                 push DSP_RESET            ;preserve current I/O addresses
-                push ADDR_STAT      
-                push DATA_OUT       
-                push DSP_READ       
-                push DSP_WRITE_STAT 
-                push DSP_DATA_RDY   
+                push ADDR_STAT
+                push DATA_OUT
+                push DSP_READ
+                push DSP_WRITE_STAT
+                push DSP_DATA_RDY
 
                 invoke set_IO_parms,[IO_ADDR],[IRQ],[DMA],[DRQ]
                 call detect_Adlib
 
-                pop DSP_DATA_RDY   
-                pop DSP_WRITE_STAT 
-                pop DSP_READ       
-                pop DATA_OUT       
-                pop ADDR_STAT      
+                pop DSP_DATA_RDY
+                pop DSP_WRITE_STAT
+                pop DSP_READ
+                pop DATA_OUT
+                pop ADDR_STAT
                 pop DSP_RESET
 
                 POP_F                     ;return AX=0 if not found
@@ -79,14 +79,14 @@ detect_device   PROC\
 detect_device   ENDP
 
 read_status     PROC                      ;Read YM3812 status register
-                mov edx,ADDR_STAT        
+                mov edx,ADDR_STAT
                 mov eax,0
                 in al,dx
                 ret
 read_status     ENDP
 
 detect_send     PROC Address,Data         ;Write data byte to specified AL reg
-                mov edx,ADDR_STAT        
+                mov edx,ADDR_STAT
                 mov al,BYTE PTR [Address]
                 out dx,al                 ;select register address
                 mov ecx,6
@@ -95,7 +95,7 @@ __3_3_us:       in al,dx                  ;delay 3.3 uS
                 mov edx,DATA_OUT
                 mov al,BYTE PTR [Data]
                 out dx,al
-                mov edx,ADDR_STAT         
+                mov edx,ADDR_STAT
                 mov ecx,42
 __23_us:        in al,dx                  ;delay 23 uS
                 loop __23_us
@@ -133,7 +133,7 @@ DSP_send        PROC\
                 USES ebx esi edi\
                 ,DataByte
 
-                mov edx,DSP_WRITE_STAT   
+                mov edx,DSP_WRITE_STAT
                 mov ecx,0
                 mov esi,64
 __wait_cts:     in al,dx
@@ -169,7 +169,7 @@ send_byte       ENDP
 ;****************************************************************************
 reset_interface PROC                    ;Returns 1 if SB interface available
 
-                pushfd         
+                pushfd
                 cli
 
                 mov eax,1
@@ -184,4 +184,4 @@ init_interface  PROC                    ;Init MIDI interface
 
                 ret
 init_interface  ENDP
-
+

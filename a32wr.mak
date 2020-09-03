@@ -1,6 +1,6 @@
 ###############################################################
 #                                                             #
-#  MAKEFILE for AIL/32 development                            #             
+#  MAKEFILE for AIL/32 development                            #
 #  10-Aug-92 John Miles                                       #
 #                                                             #
 #  This file builds drivers and sample applications for use   #
@@ -33,7 +33,7 @@ ail32.obj: ail32.asm ail32.inc 386.mac
 
 a32mt32.dll: xmidi32.asm mt3232.inc mpu40132.inc ail32.inc 386.mac
    ml /c /W0 /Cp /Zd /DMT32 /DMPU401 /DDPMI xmidi32.asm
-   wlink n a32mt32.dll f xmidi32 format os2 lx dll 
+   wlink n a32mt32.dll f xmidi32 format os2 lx dll
 
 #
 # XMIDI driver: MT-32 family with Sound Blaster MIDI-compatible interface
@@ -178,4 +178,4 @@ mix32.exe: mix32.c ail32.h dll.h ail32.obj dllload.obj
 xp32.exe: xp32.c ail32.h dll.h ail32.obj dllload.obj
    wcc386p /dDPMI xp32
    wlink n xp32 f xp32,ail32,dllload system dos4g
-
+

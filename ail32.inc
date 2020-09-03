@@ -21,12 +21,12 @@
 ;лл                                                                         лл
 ;ллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллл
 
-SEQ_STOPPED     equ 0 
+SEQ_STOPPED     equ 0
 SEQ_PLAYING     equ 1
 SEQ_DONE        equ 2
 
-DAC_STOPPED     equ 0 
-DAC_PAUSED      equ 1  
+DAC_STOPPED     equ 0
+DAC_PAUSED      equ 1
 DAC_PLAYING     equ 2
 DAC_DONE        equ 3
 
@@ -39,19 +39,19 @@ START_KSB_1     equ 33                  ;(Roland DT1 format)
 START_LSB_1     equ 34
 DATA_BYTE_1     equ 35
 FINAL_BYTE_1    equ 36
-START_MSB_2     equ 37       
+START_MSB_2     equ 37
 START_KSB_2     equ 38
 START_LSB_2     equ 39
 DATA_BYTE_2     equ 40
 FINAL_BYTE_2    equ 41
-START_MSB_3     equ 42       
+START_MSB_3     equ 42
 START_KSB_3     equ 43
 START_LSB_3     equ 44
 DATA_BYTE_3     equ 45
 FINAL_BYTE_3    equ 46
 
 RHYTHM_KEY_TIMB equ 58                  ;Roland-exclusive XMIDI controllers
-PATCH_REVERB    equ 59                  
+PATCH_REVERB    equ 59
 PATCH_BENDER    equ 60
 REVERB_MODE     equ 61
 REVERB_TIME     equ 62
@@ -102,7 +102,7 @@ AIL_SET_D_PB_PAN        equ 131
 AIL_D_PB_PAN            equ 132
 AIL_F_VOC_FILE          equ 133
 AIL_F_SND_BUFF          equ 134
-            
+
 AIL_STATE_TAB_SIZE      equ 150
 AIL_REG_SEQ             equ 151
 AIL_REL_SEQ_HND         equ 152
@@ -140,4 +140,3 @@ AIL_MAP_SEQ_CHAN        equ 192
 AIL_RELEASE_CHAN        equ 193
 AIL_TRUE_SEQ_CHAN       equ 194
 
-

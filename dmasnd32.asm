@@ -39,18 +39,18 @@ TRUE            equ -1
                 ;
 
 
-ALWAYS_ACK_IRQ  equ TRUE                ;TRUE to acknowledge any spurious 
+ALWAYS_ACK_IRQ  equ TRUE                ;TRUE to acknowledge any spurious
                                         ;Sound Blaster IRQs prior to all port
                                         ;writes -- may help avoid delays
                                         ;in starting sound effects
 
 CHECK_END_DMA   equ TRUE                ;FALSE to inhibit checking for end-
-                                        ;of-DMA conditions; disabling this 
+                                        ;of-DMA conditions; disabling this
                                         ;option is _not_ recommended!
 
 CHECK_ISR       equ TRUE                ;FALSE to read the DMA controller's
                                         ;word count to guard against spurious
-                                        ;IRQ 7 triggers ("old" method); TRUE 
+                                        ;IRQ 7 triggers ("old" method); TRUE
                                         ;to verify IRQs by reading 8259's ISR
                                         ;status ("new" method)
 
@@ -77,9 +77,9 @@ DAC_DONE        equ 3
                 ;(real-mode seg:off)
                 ;
 
-FAR_TO_HUGE     MACRO fp_seg,fp_off             
+FAR_TO_HUGE     MACRO fp_seg,fp_off
                 push ax
-                push bx                      
+                push bx
                 mov ax,fp_seg
                 mov bx,fp_off
                 shr bx,1
@@ -89,7 +89,7 @@ FAR_TO_HUGE     MACRO fp_seg,fp_off
                 add ax,bx
                 mov fp_seg,ax
                 and fp_off,0fh
-                pop bx 
+                pop bx
                 pop ax
                 ENDM
 
@@ -98,8 +98,8 @@ FAR_TO_HUGE     MACRO fp_seg,fp_off
                 ;(real-mode seg:off)
                 ;
 
-ADD_PTR         MACRO add_l,add_h,pseg,poff     
-                push bx                         
+ADD_PTR         MACRO add_l,add_h,pseg,poff
+                push bx
                 push cx
                 mov bx,pseg
                 xor cx,cx
@@ -150,7 +150,7 @@ BI_R_PCM        equ 0dh
 INTRCTLRST      equ 0b89h
 AUDIOFILT       equ 0b8ah
 INTRCTLR        equ 0b8bh
-PCMDATA 	equ 0f88h	      
+PCMDATA 	equ 0f88h
 CROSSCHANNEL    equ 0f8ah
 TMRCTLR 	equ 138bh
 SAMPLERATE	equ 1388h
@@ -161,7 +161,7 @@ sbuffer         STRUC
 pack_type       dd ?
 sample_rate     dd ?
 ptr_data        dd ?                    ;ssss:oooooooo prot. mode far *
-sel_data        dw ?                    
+sel_data        dw ?
 seg_data        dd ?                    ;ssss:oooo real-mode far *
 len             dd ?
 sbuffer         ENDS
@@ -186,24 +186,24 @@ driver_start    dd OFFSET driver_index
                 db 'Copyright (C) 1991,1992 Miles Design, Inc.',01ah
 
 driver_index    LABEL DWORD
-                dd AIL_DESC_DRVR,OFFSET describe_driver 
-                dd AIL_DET_DEV,OFFSET detect_device   
-                dd AIL_INIT_DRVR,OFFSET init_driver     
-                dd AIL_SHUTDOWN_DRVR,OFFSET shutdown_driver 
-                dd AIL_P_VOC_FILE,OFFSET play_VOC_file       
-                dd AIL_START_D_PB,OFFSET start_d_pb      
-                dd AIL_STOP_D_PB,OFFSET stop_d_pb       
-                dd AIL_PAUSE_D_PB,OFFSET pause_d_pb      
-                dd AIL_RESUME_D_PB,OFFSET cont_d_pb       
+                dd AIL_DESC_DRVR,OFFSET describe_driver
+                dd AIL_DET_DEV,OFFSET detect_device
+                dd AIL_INIT_DRVR,OFFSET init_driver
+                dd AIL_SHUTDOWN_DRVR,OFFSET shutdown_driver
+                dd AIL_P_VOC_FILE,OFFSET play_VOC_file
+                dd AIL_START_D_PB,OFFSET start_d_pb
+                dd AIL_STOP_D_PB,OFFSET stop_d_pb
+                dd AIL_PAUSE_D_PB,OFFSET pause_d_pb
+                dd AIL_RESUME_D_PB,OFFSET cont_d_pb
                 dd AIL_VOC_PB_STAT,OFFSET get_VOC_status
-                dd AIL_SET_D_PB_VOL,OFFSET set_d_pb_vol    
+                dd AIL_SET_D_PB_VOL,OFFSET set_d_pb_vol
                 dd AIL_D_PB_VOL,OFFSET get_d_pb_vol
                 dd AIL_SET_D_PB_PAN,OFFSET set_d_pb_pan
                 dd AIL_D_PB_PAN,OFFSET get_d_pb_pan
                 dd AIL_INDEX_VOC_BLK,OFFSET index_VOC_blk
                 dd AIL_REG_SND_BUFF,OFFSET register_sb
                 dd AIL_SND_BUFF_STAT,OFFSET get_sb_status
-                dd AIL_F_VOC_FILE,OFFSET format_VOC_file       
+                dd AIL_F_VOC_FILE,OFFSET format_VOC_file
                 dd AIL_F_SND_BUFF,OFFSET format_sb
                 dd -1
 
@@ -218,12 +218,12 @@ driver_type     dd 2                    ;Type 2: SBlaster DSP emulation
 data_suffix     db 'VOC',0              ;Supports .VOC files directly
 device_name_o   dd OFFSET devnames      ;Pointer to list of supported devices
 default_IO      LABEL WORD              ;Factory default I/O parameters
-                IFDEF PAS       
+                IFDEF PAS
                 dd -1                   ;(determined from MVSOUND.SYS)
                 ELSEIFDEF ADLIBG
                 dd 388h
                 ELSE
-                dd 220h                 
+                dd 220h
                 ENDIF
 default_IRQ     LABEL WORD
                 IFDEF SBSTD
@@ -320,7 +320,7 @@ buff_pack       dd 2 dup (?)
 buff_sample     dd 2 dup (?)
 buff_status     dd 2 dup (?)
 
-buffer_mode     dd ?                   
+buffer_mode     dd ?
 DAC_status      dd ?
 current_buffer  dd ?
 
@@ -370,7 +370,7 @@ MV_vr_len       equ ($-MV_vr_txt)
 DPMI_real_int   LABEL BYTE            ;DPMI real-mode interrupt structure
 
 int_DI          dw ?                  ;*** MUST REMAIN CONTIGUOUS ***
-                dw 0            
+                dw 0
 int_SI          dw ?
                 dw 0
 int_BP          dw ?
@@ -453,10 +453,10 @@ SFC_1_values    db 00000010b,00000010b,00000011b,00000011b,00000010b,01000011b
                 ENDIF
 
                 IFDEF STEREO
-pan_graph       db 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30                      
-                db 32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62                
-                db 64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94                
-                db 96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,127  
+pan_graph       db 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30
+                db 32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62
+                db 64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94
+                db 96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,127
                 db 127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127
                 db 127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127
                 db 127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127
@@ -493,7 +493,7 @@ __poll_cts:     in al,dx
 __cts:          mov eax,[BData]
                 out dx,al
                 mov eax,-1
-__exit:         
+__exit:
                 ret
 send_timeout    ENDP
 
@@ -531,7 +531,7 @@ send_byte       PROC USES ebx esi edi,\
                 mov retry,0
 
 __try:          mov edx,DSP_WRITE_STAT
-                    
+
                 mov ecx,30000h
 __wait_free_1:  sub ecx,1
                 js __timeout
@@ -542,7 +542,7 @@ __wait_free_1:  sub ecx,1
 __write_byte:   mov eax,[BData]
                 out dx,al
 
-                mov ecx,30000h          ;wait until command received 
+                mov ecx,30000h          ;wait until command received
 __wait_free_2:  sub ecx,1
                 js __exit
                 in al,dx
@@ -554,7 +554,7 @@ __exit:         ret
 __timeout:      cmp retry,0             ;already retried?
                 jne __write_byte        ;yes, continue & return
 
-                inc retry               
+                inc retry
 
                 mov edx,DSP_DATA_RDY    ;acknowledge any false IRQs that may
                 in al,dx                ;be preventing SB port writes
@@ -580,8 +580,8 @@ IO_wait         ENDP
 ;****************************************************************************
 enable_ctrl     PROC USES ebx esi edi
 
-                mov edx,CTRL_ADDR   
-                mov al,0ffh               
+                mov edx,CTRL_ADDR
+                mov al,0ffh
                 out dx,al
 
                 ret
@@ -592,8 +592,8 @@ disable_ctrl    PROC USES ebx esi edi
 
                 invoke IO_wait
 
-                mov edx,CTRL_ADDR   
-                mov al,0feh               
+                mov edx,CTRL_ADDR
+                mov al,0feh
                 out dx,al
 
                 ret
@@ -698,7 +698,7 @@ reset_DSP       PROC USES ebx esi edi
 
                 mov eax,01110110b
                 mov PRC_0_shadow,eax
-                
+
                 mov eax,1
 
                 ELSEIFDEF SBLASTER
@@ -736,7 +736,7 @@ reset_DSP       ENDP
 
 sysex_wait      PROC USES ebx esi edi,\     ;Generate a 14-millisecond (typ.)
                 Delay                   ;delay with interrupts enabled
-                                        
+
                 pushfd                  ;Requires CGA/EGA/VGA/XGA video)
                 sti
 
@@ -751,7 +751,7 @@ sysex_wait      PROC USES ebx esi edi,\     ;Generate a 14-millisecond (typ.)
 
 __sync_1:       in al,dx                ;wait for leading edge of vertical
                 test eax,8              ;retrace signal
-                jz __sync_1             
+                jz __sync_1
 
 __sync_2:       in al,dx
                 test eax,8
@@ -829,7 +829,7 @@ INT2F           ENDP
 sub_ptr         PROC USES ebx esi esi,\
                 Off1,Seg1,Off2,Seg2     ;Return DX:AX = ptr 2 - ptr 1
 
-                mov ax,WORD PTR [Seg2] 
+                mov ax,WORD PTR [Seg2]
                 mov dx,0
                 REPT 4
                 shl ax,1
@@ -866,7 +866,7 @@ block_type      ENDP
 ;****************************************************************************
 set_xblk        PROC USES ebx esi edi es
 
-                les esi,block_far_ptr        
+                les esi,block_far_ptr
                 cmp BYTE PTR es:[esi],8
                 jne __exit              ;(not an extended block)
 
@@ -885,7 +885,7 @@ __set_pack:     and eax,0ffh
                 mov xblk_pack,eax
 
                 mov xblk_status,1       ;flag extended block override
-__exit:         
+__exit:
                 ret
 set_xblk        ENDP
 
@@ -894,12 +894,12 @@ marker_num      PROC USES ebx esi edi es
 
                 les esi,block_far_ptr   ;Return EAX=block's marker #
                 cmp BYTE PTR es:[esi],4
-                mov eax,-1       
+                mov eax,-1
                 jne __exit              ;(not a marker block)
 
                 mov eax,0               ;return marker #
-                mov ax,WORD PTR es:[esi+4] 
-__exit:         
+                mov ax,WORD PTR es:[esi+4]
+__exit:
                 ret
 marker_num      ENDP
 
@@ -994,7 +994,7 @@ halt_DMA        PROC USES ebx esi edi
 __wait_busy:    sub ecx,1
                 js __send_halt
 
-                sti                     ;wait for busy status, abort if 
+                sti                     ;wait for busy status, abort if
                 jmp $+2                 ;playback ends by itself
                 jmp $+2
                 jmp $+2
@@ -1004,7 +1004,7 @@ __wait_busy:    sub ecx,1
 
                 in al,dx
                 or al,al
-                jns __wait_busy         
+                jns __wait_busy
 
                 mov ecx,32768           ;wait for free edge
 __wait_free:    dec ecx
@@ -1021,12 +1021,12 @@ __not_playing:  POP_F                   ;recover i-flag
                 ENDIF
 
                 mov playing,0
-                
+
                 ret
 halt_DMA        ENDP
 
 ;****************************************************************************
-                IFNDEF SBLASTER         
+                IFNDEF SBLASTER
 
 match_constant  PROC USES ebx esi edi,\
                 TAddr,TSize,N           ;Get entry index for nearest match to
@@ -1045,7 +1045,7 @@ __abs_delta:    lods DWORD PTR cs:[esi]
 
                 cmp eax,ebx
                 ja __next
-                
+
                 mov ebx,eax
                 mov edi,ecx
 
@@ -1097,7 +1097,7 @@ __new_parms:    mov old_freq,ecx
                 mov edx,0
                 div freq
                 mov ecx,eax
-                                                
+
                 mov al,00110110b        ;timer 0, square wave, binary mode
                 mov edx,TMRCTLR
                 out dx,al
@@ -1109,7 +1109,7 @@ __new_parms:    mov old_freq,ecx
                 out dx,al
 
                 IF PAS_FILTER
-                mov eax,OFFSET filter_cutoff   
+                mov eax,OFFSET filter_cutoff
                 mov ecx,freq            ;select filter for freq in Hz. / 2
                 shr ecx,1
                 mov ebx,6
@@ -1174,9 +1174,9 @@ __lookup:       mov ebx,4
                 mov ecx,10000000b
                 invoke MMA_write,eax,ebx,ecx
 
-                REPT 4                          
+                REPT 4
                 mov eax,0                       ;write 4 dummy bytes to
-                mov ebx,11                      ;allow proper FIFO DMA 
+                mov ebx,11                      ;allow proper FIFO DMA
                 mov ecx,0                       ;initialization
                 invoke MMA_write,eax,ebx,ecx
                 ENDM
@@ -1269,11 +1269,11 @@ send_MV_cmd     PROC USES ebx esi edi,\ ;Send command string to MVPROAS
                 mov ah,40h
                 mov ecx,[Len]
                 mov edx,[String]
-                int 21h                 
+                int 21h
 
                 mov ah,3eh              ;close MVPROAS
                 mov ebx,handle
-                int 21h                 
+                int 21h
 __exit:
                 ret
 send_MV_cmd     ENDP
@@ -1312,7 +1312,7 @@ set_volume      PROC USES ebx esi edi
                 mov edx,MIXDATA
                 or bl,bh
                 mov al,bl
-                out dx,al             
+                out dx,al
 
                 ELSEIFDEF PAS
 
@@ -1375,11 +1375,11 @@ DMAC_word_cnt   PROC USES ebx esi edi
                 cmp silence_flag,0      ;if silence packing was used, return
                 mov silence_flag,0      ;0ffffh (transfer done)
                 mov ax,0ffffh
-                jne __exit              
+                jne __exit
 
                 mov edx,DSP_DMA
                 shl edx,1
-                add edx,1                
+                add edx,1
                 in al,dx                ;DMAnCNT: Channel n Word Count
                 mov bl,al
                 in al,dx
@@ -1408,7 +1408,7 @@ program_DMAC    PROC USES ebx esi edi,\
 
                 mov eax,DSP_DMA
                 or eax,4h               ;DMASET: Set bit (mask or request)
-                out 0ah,al   
+                out 0ah,al
 
                 mov ebx,DSP_DMA
                 mov edx,80h             ;DMAPAG: Base address
@@ -1418,7 +1418,7 @@ program_DMAC    PROC USES ebx esi edi,\
 
                 mov eax,0
                 out 0ch,al              ;DMACLFF: Clear Byte Pointer Flip Flop
-                
+
                 mov edx,DSP_DMA
                 shl edx,1
                 mov eax,[DAddr]
@@ -1434,13 +1434,13 @@ program_DMAC    PROC USES ebx esi edi,\
                 mov al,ah
                 out dx,al
 
-                mov eax,48h             
+                mov eax,48h
                 or eax,DSP_DMA
                 out 0bh,al              ;DMAMD: Write Mode Register
 
                 mov eax,DSP_DMA
                 or eax,0h               ;DMARST: Reset bit (mask or request)
-                out 0ah,al   
+                out 0ah,al
 
                 POP_F
                 ret
@@ -1461,11 +1461,11 @@ IRQ_test        PROC                    ;DMA IRQ handler for IRQ detection
                 cmp DSP_IRQ,7
                 jne __DMAC_OK
 
-                mov al,00001011b        ;OCW3: read ISR 
+                mov al,00001011b        ;OCW3: read ISR
                 out 20h,al              ;(Intel Peripheral Components, 1991,
                 jmp $+2                 ; p. 3-188)
-                in al,20h               
-                test al,80h             
+                in al,20h
+                test al,80h
                 jz __exit               ;ignore IRQ if ISR bit not set
 
 __DMAC_OK:
@@ -1478,8 +1478,8 @@ __DMAC_OK:
                 in al,dx                ;acknowledge the interrupt
 
                 mov eax,DSP_DMA         ;mask DMA channel
-                or eax,4h                        
-                out 0ah,al   
+                or eax,4h
+                out 0ah,al
 
                 ENDIF
 
@@ -1501,7 +1501,7 @@ IRQ_test        ENDP
 
 ;****************************************************************************
 IRQ_play_VOC    PROC                    ;DMA IRQ handler for .VOC file output
-                     
+
                 push eax
                 push ebx
                 push ecx
@@ -1529,17 +1529,17 @@ IRQ_play_VOC    PROC                    ;DMA IRQ handler for .VOC file output
 
                 IF CHECK_ISR
 
-                mov al,00001011b        ;OCW3: read ISR 
+                mov al,00001011b        ;OCW3: read ISR
                 out 20h,al              ;(Intel Peripheral Components, 1991,
                 jmp $+2                 ; p. 3-188)
-                in al,20h               
-                test al,80h             
+                in al,20h
+                test al,80h
                 jz __exit               ;ignore IRQ if ISR bit not set
 
                 ELSE
 
                 invoke DMAC_word_cnt    ;see if DMA transfer is truly over
-                cmp ax,0                
+                cmp ax,0
                 je __DMAC_OK            ;(can occur during packed transfers)
                 cmp ax,0ffffh
                 jne __EOI
@@ -1578,8 +1578,8 @@ __DMAC_OK:
                 ENDIF
 
                 mov eax,DSP_DMA         ;mask DMA channel
-                or eax,4h                        
-                out 0ah,al   
+                or eax,4h
+                out 0ah,al
 
                 mov eax,DMA_len         ;at end of block?
                 cmp eax,0
@@ -1612,7 +1612,7 @@ IRQ_play_VOC    ENDP
 
 ;****************************************************************************
 IRQ_play_buffer PROC                    ;DMA IRQ handler for double-buffering
-                     
+
                 push eax
                 push ebx
                 push ecx
@@ -1640,17 +1640,17 @@ IRQ_play_buffer PROC                    ;DMA IRQ handler for double-buffering
 
                 IF CHECK_ISR
 
-                mov al,00001011b        ;OCW3: read ISR 
+                mov al,00001011b        ;OCW3: read ISR
                 out 20h,al              ;(Intel Peripheral Components, 1991,
                 jmp $+2                 ; p. 3-188)
-                in al,20h               
-                test al,80h             
+                in al,20h
+                test al,80h
                 jz __exit               ;ignore IRQ if ISR bit not set
 
                 ELSE
 
                 invoke DMAC_word_cnt    ;see if DMA transfer is truly over
-                cmp ax,0                
+                cmp ax,0
                 je __DMAC_OK            ;(can occur during packed transfers)
                 cmp ax,0ffffh
                 jne __EOI
@@ -1689,13 +1689,13 @@ __DMAC_OK:
                 ENDIF
 
                 mov eax,DSP_DMA         ;mask DMA channel
-                or eax,4h                        
-                out 0ah,al   
+                or eax,4h
+                out 0ah,al
 
                 mov eax,DMA_len         ;at end of block?
                 cmp eax,0
                 je __end_of_block
-                     
+
                 invoke xfer_chunk       ;no, send next chunk
                 jmp __EOI
 
@@ -1745,7 +1745,7 @@ hardware_xfer   PROC USES ebx esi edi
                 mov al,ch
                 out dx,al
 
-                mov ah,BYTE PTR MV_xchannel      
+                mov ah,BYTE PTR MV_xchannel
                 and ah,00001111b        ;reset PCM state machine
                 mov al,10110000b
                 cmp stereo_flag,0
@@ -1799,11 +1799,11 @@ xfer_chunk      PROC USES ebx esi edi
 
                 mov si,WORD PTR DMA_ptr ;Get addr, size of next chunk; send it
                 mov di,WORD PTR DMA_ptr+2
-                FAR_TO_HUGE di,si       
+                FAR_TO_HUGE di,si
                 mov cx,di               ;CX:SI = start of data to send
-                and di,0f000h  
+                and di,0f000h
                 add di,1000h            ;DI:0000 = start of next physical page
-                                        
+
                 mov ax,0                ;calculate DI:0000 - CX:SI
                 push cx
                 invoke sub_ptr,esi,ecx,eax,edi
@@ -1858,14 +1858,14 @@ __len_valid:    mov dx,0                ;program DMA controller with chunk len
                 mov DMA_len,eax
 
                 cmp packing,4           ;did we just send an initial chunk?
-                jae __exit              
+                jae __exit
                 add packing,4           ;yes, switch to "continue" opcode set
-__exit:                                 ;return DX:AX = remaining bytes 
+__exit:                                 ;return DX:AX = remaining bytes
                 ret
 xfer_chunk      ENDP
 
 ;****************************************************************************
-DMA_transfer    PROC USES ebx esi edi,\     
+DMA_transfer    PROC USES ebx esi edi,\
                 DAddr,DLen              ;(requires segment:offset pointer)
 
                 mov eax,[DAddr]
@@ -2044,7 +2044,7 @@ __use_vd:       mov pack_byte,eax
                 mov di,si
 
                 invoke DMA_transfer,edi,eax
-__exit:         
+__exit:
 
                 ret
 process_block   ENDP
@@ -2062,15 +2062,15 @@ next_buffer     PROC USES ebx esi edi
                 mov DAC_status,DAC_DONE ;else signal playback complete and
                 mov eax,-1              ;return AX=-1
 
-__return:       
+__return:
                 ret
 next_buffer     ENDP
-                     
+
 ;****************************************************************************
 process_buffer  PROC USES ebx esi edi,\
                 Buf
 
-                mov esi,[Buf]           ;get buffer handle 
+                mov esi,[Buf]           ;get buffer handle
                 shl esi,2               ;derive index
 
                 mov buff_status[esi],DAC_PLAYING
@@ -2080,12 +2080,12 @@ process_buffer  PROC USES ebx esi edi,\
                 mov pack_byte,eax
                 mov packing,eax
                 and packing,7fh
-         
+
                 and eax,80h
                 mov ecx,6
                 shr eax,cl
                 and eax,10b
-      
+
                 mov stereo_flag,eax
 
                 invoke set_sample_rate,buff_sample[esi],eax
@@ -2213,7 +2213,7 @@ set_d_pb_pan    PROC USES ebx esi edi,\
                 mov eax,[Pan]
                 mov panpot_val,eax
 
-                invoke set_volume 
+                invoke set_volume
 
                 POP_F
                 ret
@@ -2250,7 +2250,7 @@ set_d_pb_vol    ENDP
 ;****************************************************************************
 get_d_pb_vol    PROC USES ebx esi edi
 
-                pushfd                  ;Get digital playback volume 0-127        
+                pushfd                  ;Get digital playback volume 0-127
                 cli
 
                 mov eax,main_volume
@@ -2275,10 +2275,10 @@ detect_device   PROC USES ebx esi edi,\
                 mov local_DS,ds
 
                 IFDEF SBLASTER
-                push DSP_RESET       
-                push DSP_READ        
-                push DSP_WRITE_STAT  
-                push DSP_DATA_RDY    
+                push DSP_RESET
+                push DSP_READ
+                push DSP_WRITE_STAT
+                push DSP_DATA_RDY
                 push DSP_IRQ
                 push DSP_DMA
                 ENDIF
@@ -2287,7 +2287,7 @@ detect_device   PROC USES ebx esi edi,\
                 push MIXDATA
                 push MIXADDR
                 ENDIF
-                
+
                 IFDEF ADLIBG
                 push CTRL_ADDR
                 push CTRL_DATA
@@ -2399,10 +2399,10 @@ __calc_vect:    add eax,8
                 mov old_real,ecx
 
                 mov eax,0d3h
-                invoke send_timeout,eax   ;turn speaker off and let the new 
+                invoke send_timeout,eax   ;turn speaker off and let the new
                 invoke sysex_wait,16      ;setting take effect
 
-                invoke reset_DSP              
+                invoke reset_DSP
                 or eax,eax
                 jz __exit                 ;(reset failed)
 
@@ -2420,17 +2420,17 @@ __calc_vect:    add eax,8
                 out dx,al                 ;write it back
                 jmp $+2
                 in al,dx                  ;read/verify changed value
-                xor eax,110b              
+                xor eax,110b
                 cmp al,ah
                 mov al,ah                 ;put the old value back
                 out dx,al
                 mov eax,0
-                jne __exit 
+                jne __exit
                 ENDIF
                 ENDIF
 
                 pushfd                    ;prepare for IRQ/DMA test....
-                sti                       
+                sti
 
                 mov IRQ_confirm,0         ;output a few bytes of data to
                 mov packing,0             ;trigger EOD IRQ on selected line
@@ -2610,7 +2610,7 @@ init_driver     PROC USES ebx esi edi,\
 
                 mov eax,MV_xchannel     ;secure the DMA channel
                 mov edx,CROSSCHANNEL
-                or eax,10000000b       
+                or eax,10000000b
                 out dx,al
                 mov MV_xchannel,eax
 
@@ -2620,7 +2620,7 @@ init_driver     PROC USES ebx esi edi,\
                 in al,dx
                 mov edx,INTRCTLR
                 in al,dx
-                or eax,00001000b         
+                or eax,00001000b
                 out dx,al
 
                 ELSEIFDEF ADLIBG
@@ -2772,7 +2772,7 @@ __chk_marker:   cmp eax,4               ;marker block?
                 mov ebx,-1              ;marker found, use next voice block
 
 __next_blk:     mov esi,index_off
-                mov eax,es:[esi+1]                   
+                mov eax,es:[esi+1]
                 and eax,0ffffffh        ;get len
                 add eax,4               ;determine offset to next block
                 add esi,eax             ;skip current block
@@ -2835,7 +2835,7 @@ register_sb     PROC USES ebx esi edi,\
                 pushfd
                 cli
 
-                cmp buffer_mode,VOC_MODE        
+                cmp buffer_mode,VOC_MODE
                 jne __get_bufnum          ;not in VOC mode, proceed
                 invoke stop_d_pb          ;else stop VOC file output first
                 mov buffer_mode,BUF_MODE
@@ -2845,7 +2845,7 @@ __get_bufnum:   mov edi,[BufNum]          ;get buffer #0-1
 
                 ASSUME esi:PTR sbuffer
 
-                mov esi,[SBuf]            ;copy structure data to buffer 
+                mov esi,[SBuf]            ;copy structure data to buffer
                 mov eax,[esi].pack_type   ;descriptor fields
                 mov buff_pack[edi],eax
 
@@ -2860,7 +2860,7 @@ __get_bufnum:   mov edi,[BufNum]          ;get buffer #0-1
 
                 mov buff_status[edi],DAC_STOPPED
 
-__exit:         POP_F                  
+__exit:         POP_F
                 ret
 register_sb     ENDP
 
@@ -2904,14 +2904,14 @@ play_VOC_file   PROC USES ebx esi edi es,\
 
                 invoke stop_d_pb        ;assert VOC mode
                 mov buffer_mode,VOC_MODE
-                mov DAC_status,DAC_DONE 
+                mov DAC_status,DAC_DONE
 
                 les esi,[VOCFile]       ;get selector pointer to VOC file
 
                 cmp [Block],-1          ;play 1st block if no marker specified
                 je __do_it
 
-__find_blk:     invoke block_type 
+__find_blk:     invoke block_type
                 cmp eax,0               ;terminator block?
                 je __exit               ;yes, exit (block not found)
                 invoke set_xblk
@@ -2921,7 +2921,7 @@ __find_blk:     invoke block_type
                 cmp esi,[Block]
                 jne __find_blk
 
-__do_it:        mov DAC_status,DAC_STOPPED         
+__do_it:        mov DAC_status,DAC_STOPPED
 
 __exit:         POP_F
                 ret
@@ -2946,7 +2946,7 @@ format_VOC_file PROC USES ebx esi edi es,\
                 cmp [Block],-1          ;format 1st blk if no marker specified
                 je __preform_blk
 
-__form_find:    invoke block_type 
+__form_find:    invoke block_type
                 cmp eax,0               ;terminator block?
                 je __exit               ;yes, exit (block not found)
                 invoke marker_num       ;get marker # (or -1 if non-marker)
@@ -2954,7 +2954,7 @@ __form_find:    invoke block_type
                 invoke next_block
                 cmp esi,[Block]
                 jne __form_find
-           
+
 __preform_blk:  invoke block_type
                 cmp eax,0
                 je __exit
@@ -3001,7 +3001,7 @@ format_sb       PROC USES ebx esi edi,\
 
                 IFDEF NEEDS_FORMAT
 
-                mov esi,[SBuf]           
+                mov esi,[SBuf]
 
                 mov eax,[esi].pack_type
                 and eax,0fh
@@ -3030,7 +3030,7 @@ start_d_pb      PROC USES ebx esi edi
                 cmp DAC_status,DAC_PLAYING
                 je __exit               ;bail out if already playing
 
-                invoke next_buffer      ;start dual-buffer playback                
+                invoke next_buffer      ;start dual-buffer playback
                 cmp eax,-1
                 je __exit               ;no buffers registered, exit
                 mov DAC_status,DAC_PLAYING
@@ -3051,7 +3051,7 @@ start_d_pb      PROC USES ebx esi edi
 __voc_mode:     cmp DAC_status,DAC_STOPPED
                 jne __exit
                 mov DAC_status,DAC_PLAYING
-                
+
                 mov old_freq,-1
                 mov old_stereo,-1
 
@@ -3077,8 +3077,8 @@ stop_d_pb       PROC USES ebx esi edi
                 invoke halt_DMA
 
                 mov eax,DSP_DMA                 ;mask DMA channel
-                or eax,4h                        
-                out 0ah,al   
+                or eax,4h
+                out 0ah,al
 
                 mov buff_status[0*4],DAC_DONE
                 mov buff_status[1*4],DAC_DONE
@@ -3104,7 +3104,7 @@ pause_d_pb      PROC USES ebx esi edi
                 in al,dx
                 mov edx,INTRCTLR
                 in al,dx
-                and eax,11110111b        
+                and eax,11110111b
                 out dx,al
                 ENDIF
 
@@ -3131,7 +3131,7 @@ cont_d_pb       PROC USES ebx esi edi
                 in al,dx
                 mov edx,INTRCTLR
                 in al,dx
-                or eax,00001000b         
+                or eax,00001000b
                 out dx,al
                 ENDIF
 
@@ -3155,4 +3155,4 @@ get_VOC_status  ENDP
 
 ;****************************************************************************
                 END
-
+

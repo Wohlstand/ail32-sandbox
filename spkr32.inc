@@ -34,7 +34,7 @@ MAX_TRUE_CHAN   equ 2                   ;Max channel available for locking
 NUM_VOICES      equ 1                   ;# of physical voices available
 NUM_SLOTS       equ 2                   ;# of virtual voices available
                 ELSEIFDEF TANDY
-MAX_REC_CHAN    equ 4 
+MAX_REC_CHAN    equ 4
 MAX_TRUE_CHAN   equ 4
 NUM_VOICES      equ 3
 NUM_SLOTS       equ 4
@@ -44,7 +44,7 @@ MIN_TRUE_CHAN   equ 2                   ;Min channel # (1-based)
 
 DEF_SYNTH_VOL   equ 100                 ;Init vol=100%
 DEF_TC_SIZE     equ 0                   ;No timbres used
-MAX_TIMBS       equ 0                  
+MAX_TIMBS       equ 0
 
 VEL_SENS        equ 1                   ;Velocity sensitivity disabled if 0
 
@@ -72,7 +72,7 @@ default_IO      dd -1                   ;Factory default I/O parameters
 default_IRQ     dd -1
 default_DMA     dd -1
 default_DRQ     dd -1
-service_rate    dd QUANT_RATE           ;Request QUANT_RATE calls/second 
+service_rate    dd QUANT_RATE           ;Request QUANT_RATE calls/second
 display_size    dd 0                    ;No display
 
 devnames        LABEL BYTE
@@ -106,7 +106,7 @@ value_h         db 142,134,253,240,226,213,201,190,179,169,160,150
                 db 8,8,7,7,7,6,6,5,5,5,4,4
                 db 4,4,3,3,3,3,3,2,2,2,2,2
                 db 2,2,1,1,1,1,1,1,1,1,1,1
-                
+
                 ELSEIFDEF TANDY
 
 value_l         db 7,7,9,14,6,0,12,10,10,8,0,9
@@ -140,7 +140,7 @@ atten_reg       db 090h,0b0h,0d0h
 part_reg        db 080h,0a0h,0c0h
 
                 ENDIF
-                             
+
 vel_graph       db 82,85,88,91,94,97,100,103,106,109,112,115,118,121,124,127
 
                 ;
@@ -171,11 +171,11 @@ U_ALL_REGS      equ 01000001b         ;Bit mask equates for S_update
 U_KSLTL         equ 01000000b
 U_FREQ          equ 00000001b
 
-MIDI_vol        db NUM_CHANS dup (?)  ;volume 
+MIDI_vol        db NUM_CHANS dup (?)  ;volume
 MIDI_pitch_l    db NUM_CHANS dup (?)  ;pitchwheel LSB
 MIDI_pitch_h    db NUM_CHANS dup (?)  ;pitchwheel MSB
-MIDI_express    db NUM_CHANS dup (?)  ;expression 
-MIDI_sus        db NUM_CHANS dup (?)  ;HOLD1 pedal 
+MIDI_express    db NUM_CHANS dup (?)  ;expression
+MIDI_sus        db NUM_CHANS dup (?)  ;HOLD1 pedal
 MIDI_mod        db NUM_CHANS dup (?)  ;modulation
 MIDI_vprot      db NUM_CHANS dup (?)  ;voice protection
 
@@ -224,7 +224,7 @@ detect_device   ENDP
 reset_synth     PROC\                   ;Init hardware regs
                 USES ebx esi edi
 
-                pushfd                  
+                pushfd
                 cli
 
                 IFDEF IBMPC
@@ -234,7 +234,7 @@ reset_synth     PROC\                   ;Init hardware regs
                 out 61h,al              ;turn the speaker off
 
                 ELSEIFDEF TANDY
-                        
+
                 mov al,9fh              ;turn off any active sounds
                 out 0c0h,al
                 mov al,0bfh
@@ -264,7 +264,7 @@ protect_timbre  PROC H,Bank,Num
 protect_timbre  ENDP
 
 ;****************************************************************************
-unprotect_timbre PROC H,Bank,Num            
+unprotect_timbre PROC H,Bank,Num
 
                 ret
 unprotect_timbre ENDP
@@ -274,7 +274,7 @@ timbre_status   PROC\
                 USES ebx esi edi\          ;Return 0 if timbre not resident
                 ,H,Bank,Num
 
-                pushfd 
+                pushfd
                 cli
 
                 mov eax,1               ;(no timbres needed)
@@ -312,7 +312,7 @@ get_request     PROC\
                 cli
 
                 mov eax,-1
-                
+
                 POP_F
                 ret
 get_request     ENDP
@@ -367,7 +367,7 @@ serve_synth     ENDP
 ;****************************************************************************
 init_synth      PROC\                   ;Init MIDI synthesizer emulation
                 USES ebx esi edi
-                pushfd           
+                pushfd
                 cli
                 cld
 
@@ -404,12 +404,12 @@ init_synth      ENDP
 assign_voice    PROC\
                 USES ebx esi edi\
                 ,Slot                  ;Allocate hardware voice to slot
-                
+
                 mov ebx,-1             ;try to find an unassigned voice
 __search_free:  inc ebx
                 cmp ebx,NUM_VOICES
                 je __seize_voice       ;(# of active slots > # of voices)
-                cmp V_channel[ebx],-1   
+                cmp V_channel[ebx],-1
                 jne __search_free
 
                 mov esi,[Slot]         ;found free voice, assign it to slot
@@ -424,7 +424,7 @@ __search_free:  inc ebx
                 ret
 
 __seize_voice:  call update_priority   ;assign voice based on priority search
-                ret                     
+                ret
 assign_voice 	ENDP
 
 ;****************************************************************************
@@ -434,8 +434,8 @@ release_voice   PROC\
 
                 mov esi,[Slot]
 
-                cmp S_voice[esi],-1   
-                je __exit            
+                cmp S_voice[esi],-1
+                je __exit
 
                 and S_BLOCK[esi],11011111b
                 or S_update[esi],U_FREQ;force KON = 0...
@@ -451,7 +451,7 @@ release_voice   PROC\
 
 __exit:         ret
 release_voice   ENDP
-                    
+
 ;****************************************************************************
 VAL_SHIFT       MACRO
                 IFDEF TANDY
@@ -488,7 +488,7 @@ update_voice    PROC\
                 mov esi,[Slot]         ;update only requested parameters for
                                        ;speed
                 movzx ebx,S_voice[esi]
-                cmp bl,-1               
+                cmp bl,-1
                 je __exit              ;no hardware voice assigned, exit
 
                 and eax,0ffh
@@ -607,10 +607,10 @@ __lin_2:        movzx eax,value_l[ebx]
 
                 movzx ebx,notenum
                 movzx eax,value_l[ebx]
-                mov ah,value_h[ebx]      
+                mov ah,value_h[ebx]
                 VAL_SHIFT
                 mov edx,eax             ;DX=0 value
-                mov mid_val,dx          
+                mov mid_val,dx
 
                 movzx eax,pitch
                 sub ax,2000h            ;E000=min 0=none 1FFF=max
@@ -660,7 +660,7 @@ __norm_4:       sub ax,(12*16)
                 jg __norm_4
 
                 shr ax,4
-                movzx ebx,ax          
+                movzx ebx,ax
 
                 mov al,value_l[ebx]
                 mov val_l,al
@@ -722,7 +722,7 @@ update_priority PROC\                   ;Maintain synthesizer voice priority
 
                 mov edx,0               ;zero active slot count
 
-                mov esi,-1              
+                mov esi,-1
 __get_priority: inc esi                 ;build adjusted priority table and
                 cmp esi,NUM_SLOTS       ;reallocate voices if necessary
                 je __chk_demand
@@ -732,11 +732,11 @@ __get_priority: inc esi                 ;build adjusted priority table and
                 inc edx                 ;slot active, bump count
                 movzx edi,BYTE PTR S_channel[esi]
                 and edi,0fh             ;DI = slot's MIDI channel
-                mov eax,0ffffh           
+                mov eax,0ffffh
                 cmp MIDI_vprot[edi],64  ;priority = max if voice protection on
-                jge __adj_priority       
-                mov ax,S_p_val[esi*2]  
-__adj_priority: movzx ecx,MIDI_voices[edi]  ;AX = slot's base priority        
+                jge __adj_priority
+                mov ax,S_p_val[esi*2]
+__adj_priority: movzx ecx,MIDI_voices[edi]  ;AX = slot's base priority
                 sub eax,ecx             ;priority -= # of voices in channel
                 jnc __set_priority
                 mov eax,0
@@ -748,25 +748,25 @@ __chk_demand:   cmp edx,NUM_VOICES      ;more active slots than voices?
 
                 mov vcount,edx
 
-__sort_p_list:  mov eax,0               ;set AX = unvoiced highest priority                
+__sort_p_list:  mov eax,0               ;set AX = unvoiced highest priority
                 mov edx,0ffffh          ;set DX = voiced lowest priority
                 mov esi,-1
-__for_slot:     inc esi                  
+__for_slot:     inc esi
                 cmp esi,NUM_SLOTS
                 je __reassign
                 cmp S_status[esi],FREE
                 je __for_slot
                 movzx edi,WORD PTR S_V_priority[esi*2]
-                cmp S_voice[esi],-1      
-                jne __chk_low           
-                cmp edi,eax               
-                jb __for_slot         
-                mov eax,edi              
+                cmp S_voice[esi],-1
+                jne __chk_low
+                cmp edi,eax
+                jb __for_slot
+                mov eax,edi
                 mov high_p,esi          ;highest-priority unvoiced slot index
                 jmp __for_slot
-__chk_low:      cmp edi,edx               
+__chk_low:      cmp edi,edx
                 ja __for_slot
-                mov edx,edi               
+                mov edx,edi
                 mov low_p,esi           ;lowest-priority voiced slot index
                 jmp __for_slot
 
@@ -774,7 +774,7 @@ __reassign:     cmp eax,edx             ;highest unvoiced < lowest voiced?
                 jb __exit               ;yes, we're done
 
                 mov esi,low_p
-                movzx ebx,S_voice[esi]    
+                movzx ebx,S_voice[esi]
 
                 push ebx
                 invoke release_voice,esi
@@ -804,7 +804,7 @@ slot_phase      PROC\
                 ,Slot                       ;Set up slot parameters
 
                 mov esi,[Slot]
-                
+
                 mov S_BLOCK[esi],00100000b  ;set KON, clear BLOCK mask
 
                 mov S_p_val[esi*2],32767    ;instrument priority = average
@@ -825,7 +825,7 @@ __next_slot:    mov al,BYTE PTR [Note]      ;playing
 __find_note:    inc esi
                 cmp esi,NUM_SLOTS
                 je __exit
-                cmp S_status[esi],KEYON  
+                cmp S_status[esi],KEYON
                 jne __find_note
                 cmp S_keynum[esi],al
                 jne __find_note
@@ -835,7 +835,7 @@ __find_note:    inc esi
                 and ebx,0ffh
                 cmp MIDI_sus[ebx],64
                 jge __sustained
-                
+
                 invoke release_voice,esi    ;release the slot's voice
                 mov S_status[esi],FREE
                 jmp __next_slot
@@ -852,7 +852,7 @@ note_on         PROC\
                 USES ebx esi edi\
                 ,Chan,Note,Velocity ;Turn MIDI note on
 
-                mov edi,[Chan]     
+                mov edi,[Chan]
 
                 mov esi,0
 __find_slot:    cmp S_status[esi],FREE
@@ -863,7 +863,7 @@ __find_slot:    cmp S_status[esi],FREE
                 jmp __exit              ;exit if no virtual voice available
 
 __slot_found:   mov eax,[Chan]          ;establish MIDI channel
-                mov S_channel[esi],al    
+                mov S_channel[esi],al
 
                 mov edx,[Note]
                 mov S_keynum[esi],dl    ;save MIDI key #
@@ -871,11 +871,11 @@ __slot_found:   mov eax,[Chan]          ;establish MIDI channel
                 mov S_note[esi],dl
                 mov S_transpose[esi],0  ;(no transposition)
 
-                IF VEL_SENS             
+                IF VEL_SENS
                 mov eax,[Velocity]      ;establish note velocity
-                IF NOT VEL_TRUE              
+                IF NOT VEL_TRUE
                 shr al,3
-                mov ebx,OFFSET vel_graph       ;scale back velocity sensitivity to 
+                mov ebx,OFFSET vel_graph       ;scale back velocity sensitivity to
                 xlat cs:[ebx]           ;reduce perceived playback noise
                 ENDIF
                 ELSE
@@ -901,8 +901,8 @@ release_sustain PROC\
                 USES ebx esi edi\
                 ,Chan
 
-                mov esi,0                
-__release_sus:  cmp S_status[esi],FREE   
+                mov esi,0
+__release_sus:  cmp S_status[esi],FREE
                 je __next_sus
                 mov al,BYTE PTR [Chan]
                 cmp S_channel[esi],al
@@ -925,12 +925,12 @@ send_MIDI_message PROC\
                 mov esi,[D1]
                 and esi,0ffh            ;SI=data 1 / controller #
                 mov edi,[Stat]
-                mov eax,edi               
+                mov eax,edi
                 and edi,00fh            ;DI=channel
                 and eax,0f0h            ;AX=status
                 movzx ecx,BYTE PTR [D2] ;CX=data byte 2
 
-                cmp eax,0b0h             
+                cmp eax,0b0h
                 je __ctrl_change
                 cmp eax,0e0h
                 je __pitch
@@ -983,10 +983,10 @@ __MIDI:         mov al,0
                 je __MIDI_rac
                 cmp esi,ALL_NOTES_OFF
                 je __MIDI_ano
-                jmp __exit             
+                jmp __exit
 
 __MIDI_set:     mov [ebx][edi],cl       ;save shadowed controller value
-                
+
 __flag_updates: mov ebx,edi
                 mov esi,0               ;mark appropriate voice parameters
 __flag_slot:    cmp S_status[esi],FREE  ;as "changed"
@@ -1007,9 +1007,9 @@ __flag_next:    inc esi
 __MIDI_sus:     mov MIDI_sus[edi],cl    ;log sustain value
                 cmp cl,64               ;releasing sustain controller?
                 jge __exit
-                                          
+
                 invoke release_sustain,edi
-                jmp __exit              ;yes, turn off any sustained notes 
+                jmp __exit              ;yes, turn off any sustained notes
 
 __MIDI_ano:     mov esi,0               ;turn off all notes playing in channel
 __chk_note:     cmp S_status[esi],KEYON
@@ -1079,6 +1079,3 @@ write_display   PROC H,String:PTR      ;Write string to display (unless NULL)
 
 write_display   ENDP
 
-
-
-
