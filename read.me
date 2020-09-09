@@ -37,8 +37,8 @@ MSMAKE   EXE ........... Microsoft MAKE program to process sample makefiles
 READ     ME  ........... This file
 
 Versions of the following files are present in the subdirectories
-\WR, \MP, and \ZF.  These filesets are compiled for use with the 
-Watcom/Rational, MetaWare/Phar Lap, and Zortech/Flashtek 
+\WR, \MP, and \ZF.  These filesets are compiled for use with the
+Watcom/Rational, MetaWare/Phar Lap, and Zortech/Flashtek
 development environments, respectively.
 
 A32ADLIB DLL ........... Standard Ad Lib XMIDI sound driver DLL
@@ -56,7 +56,7 @@ A32SP1FM DLL ........... Sound Blaster Pro (YM3812) XMIDI sound driver DLL
 A32SP2FM DLL ........... Sound Blaster Pro (OPL-3) XMIDI sound driver DLL
 A32SPKR  DLL ........... IBM PC internal speaker XMIDI sound driver DLL
 A32TANDY DLL ........... Tandy 3-voice internal speaker XMIDI sound driver DLL
-MIX32    EXE ........... Sample program: plays simultaneous XMIDI sequences 
+MIX32    EXE ........... Sample program: plays simultaneous XMIDI sequences
 STP32    EXE ........... Sample program: plays raw 22 kHz. stereo samples
 VP32     EXE ........... Sample program: plays Creative Labs .VOC files
 XP32     EXE ........... Sample program: plays XMIDI sequences
@@ -68,7 +68,7 @@ AIL32    OBJ ........... Linkable API (Process Services) object module
 V1.00 of 29-Nov-93
 ------------------
 
-Documentation for the 32-bit functions may be found in V2.14 and later 
+Documentation for the 32-bit functions may be found in V2.14 and later
 editions of the AIL manual.  If you have not yet upgraded to V2.14, contact
 Miles Design for information on downloading the current base DOS version from
 the BBS.
@@ -77,12 +77,12 @@ V1.01 of 1-May-93
 -----------------
 
 The new driver A32MT32S.DLL may be used to support Roland MIDI synthesizers
-connected to the Sound Blaster's built-in MIDI port.  We do not recommend 
+connected to the Sound Blaster's built-in MIDI port.  We do not recommend
 this capability be used during PCM speech/sound effects playback, as the
 Sound Blaster exhibits severe noise artifacts when MIDI data is transmitted
 during PCM playback.
 
-Due to user demand, AIL/32 has been made fully compatible with the following 
+Due to user demand, AIL/32 has been made fully compatible with the following
 development environments:
 
   * Watcom C/C++ with Rational Systems DOS/4GW
@@ -96,7 +96,7 @@ A32WF    MAK ........... Sample Microsoft makefile for Watcom/Flashtek build
 A32WR    MAK ........... Sample Microsoft makefile for Watcom/Rational build
 A32ZF    MAK ........... Sample Microsoft makefile for Zortech/Flashtek build
 
-Please note that the Watcom linker must be used to rebuild the driver DLLs, 
+Please note that the Watcom linker must be used to rebuild the driver DLLs,
 even if you are building the Zortech-compatible version.  For the convenience
 of Zortech-only users, the drivers and programs on this disk are pre-built
 for Zortech/Flashtek compatibility.
@@ -122,7 +122,7 @@ overflow errors if stack checking is not turned off.
 V1.02 of 17-Jun-93
 ------------------
 
-In the process of adding Flashtek compatibility to the V1.01 release, 
+In the process of adding Flashtek compatibility to the V1.01 release,
 Pro Audio Spectrum support was inadvertently disabled.  This maintenance
 release restores Pro Audio Spectrum compatibility.
 
@@ -144,11 +144,11 @@ It is no longer necessary to rebuild the drivers prior to use, as was the case
 in earlier versions.
 
 MASM version 6.1 and 6.1a cannot be used to assemble previous versions of the
-AIL/32 API or driver set, due to their inability to correctly assemble code 
+AIL/32 API or driver set, due to their inability to correctly assemble code
 containing some varieties of the LEA instruction.  This release of AIL/32
 has been modified to avoid the use of the LEA instruction, and should assemble
-correctly under MASM 6.1 as well as 6.0.  As MASM 6.1 appears to have many 
-other problems, we recommend the use of MASM 6.00B for 32-bit assembly 
+correctly under MASM 6.1 as well as 6.0.  As MASM 6.1 appears to have many
+other problems, we recommend the use of MASM 6.00B for 32-bit assembly
 language development with AIL/32.
 
 AIL/32's timer server now enables interrupts immediately upon gaining control
@@ -157,14 +157,14 @@ lower-priority interrupts (serial, etc.) must be serviced frequently.  Set
 AIL32.ASM's EARLY_EOI option to FALSE if this causes problems for your
 application.
 
-Interrupts from sound cards with IRQ settings greater than 8 are not passed 
+Interrupts from sound cards with IRQ settings greater than 8 are not passed
 from real to protected mode by the DOS/4GW DOS extender.  Therefore,
-"dropouts" may be noticed when playing .VOC files with the \WR\VP32 program 
+"dropouts" may be noticed when playing .VOC files with the \WR\VP32 program
 on Pro Audio Spectrum (and other) cards, because launching a DOS shell places
 the system in real mode.  This behavior is normal and will not affect your
 application unless digitized sound effects are played while performing
 frequent real-mode DOS or BIOS accesses.  Note that this is a limitation of
-the DOS/4GW product; the FlashTek versions of AIL/32 are not susceptible to 
+the DOS/4GW product; the FlashTek versions of AIL/32 are not susceptible to
 this problem.
 
 V1.04 of 24-Sep-93
@@ -175,14 +175,14 @@ CHECK_ISR, when TRUE, implements an alternate method for rejecting spurious
 "noise" IRQ 7 interrupts.  The new technique may prove more reliable on many
 systems than the old method of reading the DMA controller word count register.
 
-Frequently, stopping Sound Blaster digitized sound playback before the 
-sample finishes playing will result in unexpected end-of-DMA interrupts 
+Frequently, stopping Sound Blaster digitized sound playback before the
+sample finishes playing will result in unexpected end-of-DMA interrupts
 after sound output is halted.  This can cause long delays when starting
 future sound effects, due to I/O port timeouts.  ALWAYS_ACK_IRQ, when TRUE,
 causes AIL/32 to send an "interrupt acknowledged" signal to the Sound Blaster
 prior to every I/O port write operation.  This modification has been tested
 thoroughly as part of Origin's Privateer(TM) beta test effort, but since it
-is an empirical workaround for undocumented hardware behavior, we still 
+is an empirical workaround for undocumented hardware behavior, we still
 consider it safer to refrain from stopping PCM sound effects in progress
 whenever possible.
 
@@ -210,15 +210,14 @@ should enable us to restore support for this combination.
 
 The option DETECT_SBPRO has been added to DMASND32.ASM, with a default value
 of FALSE.  This addresses occasional problems reported during detection of
-Sound Blaster Pro cards.  When FALSE, DMASND32 does not attempt to read 
+Sound Blaster Pro cards.  When FALSE, DMASND32 does not attempt to read
 values from the SBPro's "mixer" chip.
 
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 Copyright (C) 1991-1993 Miles Design, Inc.                All rights reserved
-6702 Cat Creek Trail 
+6702 Cat Creek Trail
 Austin, TX 78731
 
 (512) 345-2642               FAX (512) 346-9596            BBS (512) 454-9990
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 
-
