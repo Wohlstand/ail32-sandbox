@@ -1,14 +1,15 @@
 ###############################################################
 #                                                             #
 #  MAKEFILE for AIL/32 development                            #
-#  10-Aug-92 John Miles                                       #
+#  10-Aug-1992 John Miles, original for Microsoft MAKE        #
+#  3-SEp-2020 Vitaly Novichkov, modern for GNU Make           #
 #                                                             #
 #  This file builds drivers and sample applications for use   #
 #  with Watcom C++ and Rational Systems DOS/4GW               #
 #                                                             #
-#  Execute with Microsoft (or compatible) MAKE                #
+#  Execute with GNU Make                                      #
 #                                                             #
-#  MASM 6.x and Watcom C/C++ toolsets required to build       #
+#  JWasm and OpenWatcom C/C++ toolsets required to build      #
 #  driver DLLs for all target environments                    #
 #                                                             #
 ###############################################################
