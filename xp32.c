@@ -462,6 +462,13 @@ void main(int argc, char *argv[])
         exit(1);
     }
 
+    if(endsWith(xmiPath, ".mid"))
+    {
+        xmiPathOrig = xmiPath;
+        spawnlp(P_WAIT, "midiform.exe", "midiform.exe", "tmp.xmi", xmiPath, NULL);
+        xmiPath = "tmp.xmi";
+    }
+
     //
     // Load driver file
     //
@@ -677,6 +684,9 @@ void main(int argc, char *argv[])
         }
     }
 #endif
+
+    if(xmiPathOrig)
+        remove(xmiPath);
 
     //
     // Shut down API and all installed drivers; write XMIDI filename
